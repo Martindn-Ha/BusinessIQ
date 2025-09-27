@@ -1,4 +1,4 @@
-# BusinessIQ - Analytics Platform
+# Neighborhood Numbers - Local Business Analytics Platform
 
 A modern React-based business analytics platform that helps businesses analyze their data and gain actionable insights through AI-powered analysis.
 
