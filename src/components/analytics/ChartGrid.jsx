@@ -241,7 +241,40 @@ export default function ChartGrid({ data }) {
     // Check if chart has data array (old format)
     if (chart && chart.data && Array.isArray(chart.data) && chart.data.length > 0) {
       console.log('🔍 getChartData - Found data array:', chart.data);
-      return chart.data;
+      
+      // Transform data to Recharts format if needed
+      const transformedData = chart.data.map(item => {
+        // If data already has label/value format, return as is
+        if (item.label && item.value !== undefined) {
+          return item;
+        }
+        
+        // Transform common field names to Recharts format
+        if (item.scenario && item.revenue !== undefined) {
+          return { label: item.scenario, value: item.revenue };
+        }
+        if (item.name && item.count !== undefined) {
+          return { label: item.name, value: item.count };
+        }
+        if (item.category && item.amount !== undefined) {
+          return { label: item.category, value: item.amount };
+        }
+        if (item.month && item.sales !== undefined) {
+          return { label: item.month, value: item.sales };
+        }
+        
+        // If we can't transform, try to use the first two properties
+        const keys = Object.keys(item);
+        if (keys.length >= 2) {
+          return { label: item[keys[0]], value: item[keys[1]] };
+        }
+        
+        // Fallback: return as is
+        return item;
+      });
+      
+      console.log('🔍 getChartData - Transformed data:', transformedData);
+      return transformedData;
     }
     
     // Always generate sample data for visualization if chart exists
@@ -343,7 +376,12 @@ export default function ChartGrid({ data }) {
   const renderChart = (chart, fallbackType = 'bar') => {
     const chartData = getChartData(chart);
     
+    console.log('🔍 renderChart - Chart:', chart);
+    console.log('🔍 renderChart - Chart data:', chartData);
+    console.log('🔍 renderChart - Data length:', chartData.length);
+    
     if (chartData.length === 0) {
+      console.log('🔍 renderChart - No data, showing fallback');
       return (
         <div className="flex-1 flex items-center justify-center bg-slate-50 rounded-lg">
           <div className="text-center text-slate-500">
@@ -355,9 +393,11 @@ export default function ChartGrid({ data }) {
     }
 
     const chartTypeToUse = determineChartType(chart) || fallbackType;
+    console.log('🔍 renderChart - Chart type to use:', chartTypeToUse);
     
     switch (chartTypeToUse) {
       case 'pie':
+        console.log('🔍 renderChart - Rendering pie chart with data:', chartData);
         return (
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -381,6 +421,7 @@ export default function ChartGrid({ data }) {
         );
       
       case 'line':
+        console.log('🔍 renderChart - Rendering line chart with data:', chartData);
         return (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
@@ -395,6 +436,7 @@ export default function ChartGrid({ data }) {
       
       case 'bar':
       default:
+        console.log('🔍 renderChart - Rendering bar chart with data:', chartData);
         return (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
@@ -456,7 +498,22 @@ export default function ChartGrid({ data }) {
                   <div className="flex-1 flex flex-col">
                     {/* Show actual chart visualization */}
                     <div className="flex-1 h-[200px]">
-                      {renderChart(chart1)}
+                      {(() => {
+                        try {
+                          return renderChart(chart1);
+                        } catch (error) {
+                          console.error('Chart rendering error:', error);
+                          return (
+                            <div className="flex-1 flex items-center justify-center bg-slate-50 rounded-lg">
+                              <div className="text-center text-slate-500">
+                                <TrendingUp className="w-12 h-12 mx-auto mb-2 text-slate-400" />
+                                <p className="text-sm">Chart rendering error</p>
+                                <p className="text-xs mt-1">Check console for details</p>
+                              </div>
+                            </div>
+                          );
+                        }
+                      })()}
                     </div>
                     
                     {/* Show AI prompt for reference if available */}
