@@ -1,12 +1,14 @@
-# Neighborhood Numbers - Local Business Analytics Platform
+# BusinessIQ Analytics Platform
 
-A modern React-based business analytics platform that helps businesses analyze their data and gain actionable insights through AI-powered analysis.
+A modern React-based business analytics platform that helps local businesses analyze their data and gain actionable insights through AI-powered analysis using Google Gemini.
 
 ## Features
 
 - **Dashboard**: Overview of business metrics and recent uploads
-- **Analytics**: Detailed charts and visualizations with AI-generated insights
-- **Data Upload**: Easy file upload with business type selection and data processing
+- **Analytics**: Interactive charts and visualizations with AI-generated insights and recommendations
+- **Data Upload**: Easy file upload with business type selection and AI-powered data processing
+- **AI-Powered Analysis**: Google Gemini integration for intelligent business insights
+- **Dynamic Chart Generation**: Automatic chart type selection based on data content
 - **Modern UI**: Beautiful, responsive design with smooth animations
 
 ## Getting Started
@@ -15,6 +17,7 @@ A modern React-based business analytics platform that helps businesses analyze t
 
 - Node.js (v16 or higher)
 - npm or yarn
+- Google Gemini API key
 
 ### Installation
 
@@ -23,12 +26,21 @@ A modern React-based business analytics platform that helps businesses analyze t
 npm install
 ```
 
-2. Start the development server:
+2. Set up environment variables:
+```bash
+cp env.example .env.local
+```
+Edit `.env.local` and add your Google Gemini API key:
+```
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+3. Start the development server:
 ```bash
 npm run dev
 ```
 
-3. Open your browser and navigate to `http://localhost:3000`
+4. Open your browser and navigate to `http://localhost:3000`
 
 ### Building for Production
 
@@ -69,6 +81,8 @@ src/
 - **Tailwind CSS** - Styling
 - **Framer Motion** - Animations
 - **Lucide React** - Icons
+- **Recharts** - Data visualization and charts
+- **Google Gemini AI** - AI-powered data analysis
 - **Vite** - Build tool
 
 ## Features Overview
@@ -77,17 +91,45 @@ src/
 - Key performance metrics overview
 - Recent data uploads
 - Quick insights panel
+- Clear All Data functionality for MVP testing
 
 ### Analytics
-- Interactive charts and visualizations
-- AI-generated business insights
+- Interactive charts and visualizations (Bar, Line, Pie charts)
+- AI-generated business insights and recommendations
+- Dynamic chart type selection based on data content
 - Data export capabilities
+- Real-time data visualization with Recharts
 
 ### Upload Flow
 - Drag-and-drop file upload
 - Business type selection (Restaurant, Retail, Service)
+- AI-powered data analysis with Google Gemini
 - Data preview and processing steps
 - Real-time progress tracking
+- Automatic step progression
+
+### AI Integration
+- Google Gemini API for intelligent data analysis
+- Structured JSON output for consistent data processing
+- Automatic insight and recommendation generation
+- Smart chart type detection based on content
+- Data cleaning and validation
+
+## API Configuration
+
+### Google Gemini Setup
+
+1. Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Add it to your `.env.local` file:
+```
+VITE_GEMINI_API_KEY=your_api_key_here
+```
+
+### Supported Data Formats
+
+- CSV files with business data
+- Automatic data cleaning and validation
+- Support for various business types (Restaurant, Retail, Service)
 
 ## Customization
 
@@ -97,6 +139,7 @@ The app uses a modular component structure, making it easy to customize:
 - Add new business types in upload components
 - Extend analytics with additional chart types
 - Add new dashboard widgets
+- Customize AI prompts in `src/services/geminiService.js`
 
 ## Contributing
 
