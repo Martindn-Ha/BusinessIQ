@@ -1,8 +1,9 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "./utils";
-import { BarChart3, Upload, TrendingUp, FileText, Settings } from "lucide-react";
+import { BarChart3, Upload, TrendingUp, FileText, Settings, Trash2 } from "lucide-react";
+import { Button } from "./components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +34,20 @@ const navigationItems = [
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  const handleClearData = () => {
+    if (showClearConfirm) {
+      // Clear all business data from localStorage
+      localStorage.removeItem('businessData');
+      // Reload the page to refresh all components
+      window.location.reload();
+    } else {
+      setShowClearConfirm(true);
+      // Auto-hide confirmation after 3 seconds
+      setTimeout(() => setShowClearConfirm(false), 3000);
+    }
+  };
 
   return (
     <>
@@ -69,7 +84,7 @@ export default function Layout({ children, currentPageName }) {
       
       <SidebarProvider>
         <div className="min-h-screen flex w-full gradient-bg">
-          <Sidebar className="border-r border-slate-200/60 glass-effect">
+          <Sidebar className="border-r border-slate-200/60 glass-effect flex flex-col h-screen">
             <SidebarHeader className="border-b border-slate-200/60 p-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
@@ -82,7 +97,7 @@ export default function Layout({ children, currentPageName }) {
               </div>
             </SidebarHeader>
             
-            <SidebarContent className="p-4">
+            <SidebarContent className="p-4 flex-1">
               <SidebarGroup>
                 <SidebarGroupLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-3">
                   Navigation
@@ -134,7 +149,23 @@ export default function Layout({ children, currentPageName }) {
               </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-slate-200/60 p-4">
+            <SidebarFooter className="border-t border-slate-200/60 p-4 space-y-3 mt-auto">
+              {/* MVP Clear Data Button */}
+              <Button
+                onClick={handleClearData}
+                variant="outline"
+                size="sm"
+                className={`w-full text-xs transition-all duration-200 ${
+                  showClearConfirm 
+                    ? 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100' 
+                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <Trash2 className="w-3 h-3 mr-2" />
+                {showClearConfirm ? 'Click to Confirm Clear' : 'Clear All Data (MVP)'}
+              </Button>
+              
+              {/* User Profile */}
               <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50">
                 <div className="w-9 h-9 bg-gradient-to-r from-slate-600 to-slate-700 rounded-lg flex items-center justify-center">
                   <span className="text-white font-semibold text-sm">B</span>

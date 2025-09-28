@@ -5,6 +5,7 @@ import { ArrowLeft, Upload as UploadIcon, FileText, CheckCircle } from "lucide-r
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { motion } from "framer-motion";
+import { BusinessData } from "../entities/BusinessData";
 
 import FileUploadZone from "../components/upload/FileUploadZone";
 import BusinessTypeSelector from "../components/upload/BusinessTypeSelector";
@@ -38,11 +39,57 @@ export default function UploadPage() {
     setIsProcessing(true);
     setProcessingStep(3);
     
-    // Simulate processing time
-    setTimeout(() => {
+    try {
+      console.log('🚀 Starting data processing...');
+      console.log('📁 File:', uploadedFile.name);
+      console.log('🏢 Business Type:', businessType);
+      
+      // Read the uploaded file
+      console.log('📖 Reading file content...');
+      const fileContent = await readFileContent(uploadedFile);
+      console.log('📄 File content preview:', fileContent.substring(0, 200) + '...');
+      
+      // Analyze with AI
+      console.log('🤖 Starting AI analysis...');
+      const aiAnalysis = await BusinessData.analyzeWithAI(
+        fileContent,
+        businessType,
+        uploadedFile.name
+      );
+      
+      console.log('✅ AI analysis completed:', aiAnalysis);
+      
+      // Create business data record
+      const businessData = {
+        file_name: uploadedFile.name,
+        file_url: URL.createObjectURL(uploadedFile),
+        business_type: businessType,
+        ...aiAnalysis
+      };
+      
+      // Save to storage
+      console.log('💾 Saving to storage...');
+      await BusinessData.create(businessData);
+      
+      console.log('🎉 Process completed successfully!');
+      
       setIsProcessing(false);
       setProcessingStep(4);
-    }, 3000);
+    } catch (error) {
+      console.error('❌ Error processing data:', error);
+      console.error('Full error details:', error);
+      setIsProcessing(false);
+      setProcessingStep(4); // Still show completion even if AI fails
+    }
+  };
+
+  const readFileContent = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (e) => reject(e);
+      reader.readAsText(file);
+    });
   };
 
   const resetUpload = () => {

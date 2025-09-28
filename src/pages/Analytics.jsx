@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import ChartGrid from "../components/analytics/ChartGrid";
 import InsightsPanel from "../components/analytics/InsightsPanel";
 import MetricsOverview from "../components/analytics/MetricsOverview";
+import RecommendationsPanel from "../components/analytics/RecommendationsPanel";
 
 export default function AnalyticsPage() {
   const navigate = useNavigate();
@@ -123,13 +124,11 @@ export default function AnalyticsPage() {
           <div className="space-y-8">
             <MetricsOverview data={selectedDataset} />
             
-            <div className="grid lg:grid-cols-4 gap-8">
-              <div className="lg:col-span-3">
-                <ChartGrid data={selectedDataset} />
-              </div>
-              <div>
-                <InsightsPanel insights={selectedDataset.insights || []} />
-              </div>
+            <ChartGrid data={selectedDataset} />
+            
+            <div className="grid lg:grid-cols-2 gap-8">
+              <InsightsPanel insights={selectedDataset.insights || []} />
+              <RecommendationsPanel recommendations={selectedDataset.recommendations || []} />
             </div>
           </div>
         ) : null}
